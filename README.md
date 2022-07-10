@@ -1,9 +1,8 @@
 # Reddit ETL Pipeline
 
-A data pipeline to extract Reddit data from [r/dataengineering](https://www.reddit.com/r/dataengineering/). 
+A data pipeline to extract Reddit data from [r/rational](https://www.reddit.com/r/rational/). 
 
-Output is a Google Data Studio report, providing insight into the Data Engineering official subreddit.
-
+Output is a Google Data Studio report but could be easily adapted to other visualizations (eg. custom dashboard in plotly, etc.).
 ## Motivation
 
 Project was based on an interest in Data Engineering and the types of Q&A found on the official subreddit. 
