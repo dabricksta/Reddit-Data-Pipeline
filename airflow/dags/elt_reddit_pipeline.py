@@ -1,30 +1,32 @@
-from os import remove
-from airflow import DAG 
-from airflow.operators.bash_operator import BashOperator
-from airflow.utils.dates import days_ago
-from datetime import timedelta, datetime
-
+# pylint: disable=broad-except, invalid-name, unused-import, pointless-statement
 """
 DAG to extract Reddit data, load into AWS S3, and copy to AWS Redshift
 """
 
-# Output name of extracted file. This be passed to each 
+from os import remove
+from datetime import timedelta, datetime
+from airflow import DAG 
+from airflow.operators.bash_operator import BashOperator
+from airflow.utils.dates import days_ago
+
+
+# Output name of extracted file. This be passed to each
 # DAG task so they know which file to process
 output_name = datetime.now().strftime("%Y%m%d")
 
-# Run our DAG daily and ensures DAG run will kick off 
+# Run our DAG daily and ensures DAG run will kick off
 # once Airflow is started, as it will try to "catch up"
-schedule_interval = '@daily' 
-start_date = days_ago(1)
+SCHEDULE_INTERVAL = '@weekly'
+START_DATE = days_ago(1)
 
 default_args = {"owner": "airflow", "depends_on_past": False, "retries": 1}
 
 with DAG(
     dag_id='elt_reddit_pipeline',
     description ='Reddit ELT',
-    schedule_interval=schedule_interval,
+    schedule_interval=SCHEDULE_INTERVAL,
     default_args=default_args,
-    start_date=start_date,
+    start_date=START_DATE,
     catchup=True,
     max_active_runs=1,
     tags=['RedditETL'],
@@ -43,7 +45,7 @@ with DAG(
         dag = dag,
     )
     upload_to_s3.doc_md = 'Upload Reddit CSV data to S3 bucket'
-    
+
     copy_to_redshift = BashOperator(
         task_id = 'copy_to_redshift',
         bash_command = f"python /opt/airflow/extraction/upload_aws_redshift_etl.py {output_name}",

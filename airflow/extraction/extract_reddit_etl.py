@@ -1,10 +1,10 @@
+# pylint: disable=line-too-long, broad-except, invalid-name, redefined-outer-name
 """
 Part of Airflow DAG. Takes in one command line argument of format YYYYMMDD.
 Script will connect to Reddit API and extract top posts from past week
 with no limit. For a small subreddit like Data Engineering, this should extract all posts
 from the past week.
 """
-# pylint: disable=line-too-long, broad-except, invalid-name, redefined-outer-name
 
 import configparser
 import datetime
