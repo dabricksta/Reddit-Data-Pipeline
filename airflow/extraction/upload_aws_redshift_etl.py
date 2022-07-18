@@ -1,17 +1,19 @@
+"""
+Part of DAG. Upload S3 CSV data to Redshift. Takes one argument of format YYYYMMDD. This
+is the name of the file to copy from S3. Script will load data into temporary table in Redshift,
+delete records with the same post ID from main table, then insert these from temp table (along
+with new data) to main table. This means that if we somehow pick up duplicate records in a new
+DAG run, the record in Redshift will be updated to reflect any changes in that record, if any
+(e.g. higher score or more comments).
+"""
+# pylint: disable=line-too-long, broad-except, invalid-name, redefined-outer-name
+
+import sys
 import configparser
 import pathlib
 import psycopg2
-import sys
 from validation import validate_input
 from psycopg2 import sql
-
-"""
-Part of DAG. Upload S3 CSV data to Redshift. Takes one argument of format YYYYMMDD. This is the name of 
-the file to copy from S3. Script will load data into temporary table in Redshift, delete 
-records with the same post ID from main table, then insert these from temp table (along with new data) 
-to main table. This means that if we somehow pick up duplicate records in a new DAG run,
-the record in Redshift will be updated to reflect any changes in that record, if any (e.g. higher score or more comments).
-"""
 
 # Parse our configuration file
 script_path = pathlib.Path(__file__).parent.resolve()
@@ -31,11 +33,11 @@ TABLE_NAME = 'reddit'
 
 # Check command line argument passed
 try:
-  output_name = sys.argv[1]
+    output_name = sys.argv[1]
 except Exception as e:
-  print(f"Command line argument not passed. Error {e}")
-  sys.exit(1)
- 
+    print(f"Command line argument not passed. Error {e}")
+    sys.exit(1)
+
 # Our S3 file & role_string
 file_path = f"s3://{BUCKET_NAME}/{output_name}.csv"
 role_string = f'arn:aws:iam::{ACCOUNT_ID}:role/{REDSHIFT_ROLE}'
@@ -64,7 +66,7 @@ insert_into_table = sql.SQL("INSERT INTO {table} SELECT * FROM our_staging_table
 drop_temp_table = "DROP TABLE our_staging_table;"
 
 def main():
-    """Upload file form S3 to Redshift Table"""
+    """Upload file from S3 to Redshift Table"""
     validate_input(output_name)
     rs_conn = connect_to_redshift()
     load_data_into_redshift(rs_conn)
@@ -90,10 +92,10 @@ def load_data_into_redshift(rs_conn):
         cur.execute(insert_into_table)
         cur.execute(drop_temp_table)
 
-        # Commit only at the end, so we won't end up 
+        # Commit only at the end, so we won't end up
         # with a temp table and deleted main table if something fails
         rs_conn.commit()
 
 if __name__ == '__main__':
     main()
-
+    

@@ -2,6 +2,7 @@ venv/
 extraction/secrets/
 notes/
 airflow/extraction/*.csv
+airflow/extraction/configuration.conf
 airflow/dags/__pycache__
 airflow/plugins/*
 airflow/logs/*
@@ -10,7 +11,8 @@ airflow/.env
 airflow/.DS_Store
 airflow/extraction/pipeline_secret.conf
 terraform/*
-!*.tf
+# Do not understand why removing the next line prevents committing tf files as mentioned in the guide
+# !*.tf
 *.conf
 .DS_Store
 __pycache__

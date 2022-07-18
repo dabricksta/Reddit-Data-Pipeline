@@ -1,13 +1,14 @@
+# pylint: disable=broad-except, invalid-name, redefined-outer-name
+"""
+Download Redshift table to CSV file. Will be stored under /tmp folder.
+"""
+
+import csv
+import sys
 import configparser
 import pathlib
 import psycopg2
 from psycopg2 import sql
-import csv
-import sys
-
-"""
-Download Redshift table to CSV file. Will be stored under /tmp folder.
-"""
 
 # Parse configuration file
 script_path = pathlib.Path(__file__).parent.resolve()
@@ -25,7 +26,8 @@ TABLE_NAME = 'reddit'
 def connect_to_redshift():
     """Connect to Redshift instance"""
     try:
-        rs_conn = psycopg2.connect(dbname = DATABASE, user = USERNAME, password = PASSWORD, host = HOST, port = PORT)
+        rs_conn = psycopg2.connect(dbname = DATABASE, user = USERNAME
+            , password = PASSWORD, host = HOST, port = PORT)
         return rs_conn
     except Exception as e:
         print(f"Unable to connect to Redshift. Error {e}")
@@ -47,3 +49,4 @@ def download_redshift_data(rs_conn):
 if __name__ == "__main__":
     rs_conn = connect_to_redshift()
     download_redshift_data(rs_conn)
+    

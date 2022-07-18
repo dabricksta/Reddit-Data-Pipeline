@@ -1,14 +1,16 @@
-import boto3
-import botocore
+"""
+Part of DAG. Take Reddit data and upload to S3 bucket. Takes one command line argument of format 
+YYYYMMDD. This represents the file downloaded from Reddit, which will be in the /tmp folder.
+"""
+# pylint: disable=broad-except, invalid-name, redefined-outer-name
+
 import configparser
 import pathlib
 import sys
+import boto3
+import botocore
 from validation import validate_input
 
-"""
-Part of DAG. Take Reddit data and upload to S3 bucket. Takes one command line argument of format YYYYMMDD. 
-This represents the file downloaded from Reddit, which will be in the /tmp folder.
-"""
 
 # Load AWS credentials
 parser = configparser.ConfigParser()
@@ -18,21 +20,21 @@ BUCKET_NAME = parser.get("aws_config", "bucket_name")
 AWS_REGION = parser.get("aws_config", "aws_region")
 
 try:
-  output_name = sys.argv[1]
+    output_name = sys.argv[1]
 except Exception as e:
-  print(f"Command line argument not passed. Error {e}")
-  sys.exit(1)
- 
+    print(f"Command line argument not passed. Error {e}")
+    sys.exit(1)
+
 # Name for our S3 file
 FILENAME = f"{output_name}.csv"
 KEY = FILENAME
 
 def main():
-  """Upload input file to S3 bucket"""
-  validate_input(output_name)
-  conn = connect_to_s3()
-  create_bucket_if_not_exists(conn)
-  upload_file_to_s3(conn)
+    """Upload input file to S3 bucket"""
+    validate_input(output_name)
+    conn = connect_to_s3()
+    create_bucket_if_not_exists(conn)
+    upload_file_to_s3(conn)
 
 def connect_to_s3():
   """Connect to S3 Instance"""

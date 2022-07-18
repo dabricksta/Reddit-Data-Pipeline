@@ -28,7 +28,7 @@ resource "aws_redshift_cluster" "redshift" {
   
 }
 
-# Confuge security group for Redshift allowing all inbound/outbound traffic
+# Configure security group for Redshift allowing all inbound/outbound traffic
  resource "aws_security_group" "sg_redshift" {
   name        = "sg_redshift"
   ingress {
